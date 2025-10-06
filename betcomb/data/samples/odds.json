@@ -1,0 +1,32 @@
+{
+  "odds": [
+    {
+      "match_id": "LALIGA-001",
+      "fetched_at": "2025-10-05T15:00:00Z",
+      "quotes": [
+        {"market": "CARDS_BTTS", "provider": "MockBook", "odds": 1.55},
+        {"market": "CARDS_BTTS", "provider": "AltBook", "odds": 1.58},
+        {"market": "FH_OVER_0_5", "provider": "MockBook", "odds": 1.40},
+        {"market": "FH_OVER_0_5", "provider": "AltBook", "odds": 1.42}
+      ]
+    },
+    {
+      "match_id": "LIB-101",
+      "fetched_at": "2025-10-05T15:05:00Z",
+      "quotes": [
+        {"market": "CARDS_BTTS", "provider": "MockBook", "odds": 1.48},
+        {"market": "CARDS_BTTS", "provider": "AltBook", "odds": 1.50},
+        {"market": "FH_OVER_0_5", "provider": "MockBook", "odds": 1.44},
+        {"market": "FH_OVER_0_5", "provider": "AltBook", "odds": 1.46}
+      ]
+    },
+    {
+      "match_id": "BUND-050",
+      "fetched_at": "2025-10-05T15:10:00Z",
+      "quotes": [
+        {"market": "CARDS_BTTS", "provider": "MockBook", "odds": 1.62},
+        {"market": "FH_OVER_0_5", "provider": "MockBook", "odds": 1.36}
+      ]
+    }
+  ]
+}

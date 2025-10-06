@@ -1,0 +1,15 @@
+
+---
+
+## 3) `.env.example`
+
+```dotenv
+# Copia este archivo a .env y completa tus claves
+
+# API-FOOTBALL
+APIFOOTBALL_KEY=tu_api_key_aqui
+# (alternativa reconocida por el provider)
+# API_FOOTBALL_KEY=tu_api_key_aqui
+
+# TheOddsAPI (si llegas a usar ese provider)
+# THEODDS_API_KEY=tu_api_key_aqui

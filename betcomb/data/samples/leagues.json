@@ -1,0 +1,13 @@
+{
+  "leagues": [
+    {"code": "EPL", "name": "Premier League", "region": "eu"},
+    {"code": "LALIGA", "name": "LaLiga", "region": "eu"},
+    {"code": "SERIE_A", "name": "Serie A", "region": "eu"},
+    {"code": "LIGUE_1", "name": "Ligue 1", "region": "eu"},
+    {"code": "BUNDES", "name": "Bundesliga", "region": "eu"},
+    {"code": "LIBERTADORES", "name": "Copa Libertadores", "region": "conmebol"},
+    {"code": "SUDAMERICANA", "name": "Copa Sudamericana", "region": "conmebol"},
+    {"code": "UCL", "name": "UEFA Champions League", "region": "uefa"},
+    {"code": "UEL", "name": "UEFA Europa League", "region": "uefa"}
+  ]
+}

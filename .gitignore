@@ -1,0 +1,55 @@
+# --- Python básico ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.pkl
+*.sqlite
+*.db
+
+# --- Entornos virtuales ---
+.venv/
+venv/
+env/
+ENV/
+.conda/
+
+# --- Construcción / empaquetado ---
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# --- Herramientas / análisis ---
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+
+# --- IDEs / SO ---
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# --- Logs y cuadernos ---
+*.log
+.ipynb_checkpoints/
+
+# --- Proyecto betcomb ---
+.betcomb_cache/
+.betcomb_cache/*
+# Si generas exportaciones o artefactos auxiliares, ignóralos también:
+last_*.json
+last_*.md
+
+# --- Variables de entorno ---
+.env
+.env.*
+!.env.example
