@@ -19,9 +19,15 @@ from .domain.schemas import Slip, Match
 from .domain.combiner import best_double, list_singles
 from .domain.markets import MARKET_LABELS, FH_OVER_0_5
 from .cache import make_key, load_pickle, save_pickle
+from .aggregators.cards_bt_aggregator import app as agg_cards_cli
+from .parsers.odds_cards_bt import app as odds_cards_cli
+from .markets.cards_bt import app as cards_bt_cli
 
 
 app = typer.Typer(name="betcomb", help="Combinador de apuestas (doubles) con heurísticas.")
+app.add_typer(agg_cards_cli, name="agg-cards")
+app.add_typer(odds_cards_cli, name="odds-cards")
+app.add_typer(cards_bt_cli, name="cards-bt")
 
 
 def _stats_provider(name: str):

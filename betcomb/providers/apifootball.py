@@ -2,7 +2,7 @@ from __future__ import annotations
 from ..config import SETTINGS
 from .base import ProviderStats, parse_iso
 from ..domain.schemas import League, Team, Match
-from typing import List, Set, Dict, Any, Optional
+from typing import List, Set, Dict, Any, Optional, Tuple
 from datetime import datetime, timedelta, timezone
 import os
 import logging
@@ -10,6 +10,7 @@ import requests
 import datetime as dt
 
 LOG = logging.getLogger(__name__)
+logger = LOG
 
 API_BASE = "https://v3.football.api-sports.io"
 
@@ -284,6 +285,35 @@ class APIFootballStats(ProviderStats):
 
         return matches
 
+    def resolve_league(self, code: str, season: int | None = None) -> Tuple[int | None, int]:
+        """Exposición pública del resolvedor de league_id/season."""
+        return self._resolve_league_id_and_season(code, season)
+
+    def fixtures_raw(
+        self,
+        league_id: int,
+        season: int,
+        status: str = "FT",
+        date_from: str | None = None,
+        date_to: str | None = None,
+    ) -> List[dict]:
+        params: Dict[str, Any] = {
+            "league": league_id,
+            "season": season,
+            "status": status,
+            "timezone": "UTC",
+        }
+        if date_from:
+            params["from"] = date_from
+        if date_to:
+            params["to"] = date_to
+        resp = self._http_get("fixtures", params=params)
+        return resp.get("response", [])
+
+    def fixture_statistics(self, fixture_id: int) -> List[dict]:
+        resp = self._http_get("fixtures/statistics", params={"fixture": fixture_id})
+        return resp.get("response", [])
+
     # ---------- Internos ----------
     def _region_for_code(self, code: str) -> str:
         if code in {"EPL", "LALIGA", "SERIE_A", "LIGUE_1", "BUNDES"}:
@@ -294,14 +324,14 @@ class APIFootballStats(ProviderStats):
             return "uefa"
         return "eu"
 
-    def _resolve_league_id_and_season(self, code: str) -> Tuple[int | None, int]:
+    def _resolve_league_id_and_season(self, code: str, season: int | None = None) -> Tuple[int | None, int]:
         """
         Estrategia:
         1) /leagues?search=<alias>&season=<season> para varios alias
         2) /leagues?country=<country>&type=<league/cup>&season=<season>
         3) Fallback estático a IDs conocidos
         """
-        season = _current_season_year()
+        target_season = season or _current_season_year()
         aliases = LEAGUE_ALIASES.get(
             code,
             {"queries": [LEAGUE_NAME_BY_CODE.get(code, code)], "country": None, "type": None},
@@ -310,13 +340,13 @@ class APIFootballStats(ProviderStats):
         for q in aliases.get("queries", []):
             try:
                 url = f"{API_BASE}/leagues"
-                params = {"search": q, "season": season}
+                params = {"search": q, "season": target_season}
                 r = requests.get(url, headers=_headers(self.api_key), params=params, timeout=20)
                 r.raise_for_status()
                 resp = r.json().get("response", [])
                 league_id = self._pick_league_id_from_response(resp, q)
                 if league_id:
-                    return league_id, season
+                    return league_id, target_season
             except Exception as e:
                 logger.debug(f"/leagues?search={q} falló: {e}")
 
@@ -326,7 +356,7 @@ class APIFootballStats(ProviderStats):
         if country or ltype:
             try:
                 url = f"{API_BASE}/leagues"
-                params = {"season": season}
+                params = {"season": target_season}
                 if country:
                     params["country"] = country
                 if ltype:
@@ -337,11 +367,11 @@ class APIFootballStats(ProviderStats):
                 for alias in aliases.get("queries", []):
                     lid = self._pick_league_id_from_response(resp, alias)
                     if lid:
-                        return lid, season
+                        return lid, target_season
                 if resp:
                     lid = resp[0].get("league", {}).get("id")
                     if lid:
-                        return lid, season
+                        return lid, target_season
             except Exception as e:
                 logger.debug(f"/leagues country/type fallback falló: {e}")
 
@@ -349,9 +379,9 @@ class APIFootballStats(ProviderStats):
         static_id = STATIC_LEAGUE_ID_MAP.get(code)
         if static_id:
             logger.warning(f"Usando fallback estático para {code}: league_id={static_id}")
-            return static_id, season
+            return static_id, target_season
 
-        return None, season
+        return None, target_season
 
     def _pick_league_id_from_response(self, resp: List[dict], alias_query: str) -> int | None:
         alias_low = alias_query.lower()
